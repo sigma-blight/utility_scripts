@@ -41,7 +41,7 @@ execute "cd $LLVM_DIR/projects"
 execute "svn co http://llvm.org/svn/llvm-project/libcxx/trunk libcxx"
 
 # Build LLVM and Clang
-execute "mkdir $BUID_DIR"
-execute "cd $BUID_DIR"
+execute "mkdir $BUILD_DIR"
+execute "cd $BUILD_DIR"
 execute "cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=Release $LLVM_DIR"
-execute "make -j $CPU_CORES"
+execute "ninja -j $CPU_CORES"
