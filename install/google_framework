@@ -1,0 +1,77 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 <install_location>"
+    exit -1
+fi
+
+function make_dir()
+{
+    rm -rf "$1"
+    mkdir "$1"
+}
+
+echo -e "\n** GOOGLE FRAMEWORK INSTALL **\n"
+
+cd "$1"
+INSTALL_DIR=$(pwd)
+CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release"
+MAKE_ARGS="-j"
+GTEST_REPO="https://github.com/google/googletest.git"
+GBENCH_REPO="https://github.com/google/benchmark.git"
+
+echo -e "\n Installation Directory: $INSTALL_DIR \n"
+
+echo -e "\n** INSTALLING GOOGLE TEST **\n"
+
+GTEST_DIR="$INSTALL_DIR/googletest/googletest"
+GMOCK_DIR="$INSTALL_DIR/googletest/googlemock"
+GTEST_BUILD_DIR="$INSTALL_DIR/gtest_build"
+GMOCK_BUILD_DIR="$INSTALL_DIR/gmock_build"
+GTEST_LIB_DIR="$INSTALL_DIR/gtest_lib"
+GTEST_INC_DIR="$INSTALL_DIR/gtest_include"
+
+cd $INSTALL_DIR
+git clone $GTEST_REPO
+
+make_dir $GTEST_BUILD_DIR
+make_dir $GMOCK_BUILD_DIR
+make_dir $GTEST_LIB_DIR
+make_dir $GTEST_INC_DIR
+
+cd $GTEST_BUILD_DIR
+cmake $GTEST_DIR $CMAKE_ARGS
+make $MAKE_ARGS
+
+cp $GTEST_BUILD_DIR/*.a $GTEST_LIB_DIR/
+cp -rf $GTEST_DIR/include/* $GTEST_INC_DIR/
+
+cd $GMOCK_BUILD_DIR
+cmake $GMOCK_DIR $CMAKE_ARGS
+make $MAKE_ARGS
+
+cp $GMOCK_BUILD_DIR/*.a $GTEST_LIB_DIR/
+cp -rf $GMOCK_DIR/include/* $GTEST_INC_DIR/
+
+echo -e "\n** INSTALLING GOOGLE BENCHMARK **\n"
+
+GBENCH_DIR="$INSTALL_DIR/benchmark"
+GBENCH_BUILD_DIR="$INSTALL_DIR/gbench_build"
+GBENCH_LIB_DIR="$INSTALL_DIR/gbench_lib"
+GBENCH_INC_DIR="$INSTALL_DIR/gbench_include"
+
+cd $INSTALL_DIR
+git clone $GBENCH_REPO
+
+make_dir $GBENCH_LIB_DIR
+make_dir $GBENCH_BUILD_DIR
+make_dir $GBENCH_INC_DIR
+
+cd $GBENCH_BUILD_DIR
+cmake $GBENCH_DIR $CMAKE_ARGS
+make $MAKE_ARGS
+
+cp $GBENCH_BUILD_DIR/src/*.a $GBENCH_LIB_DIR
+cp -rf $GBENCH_DIR/include/* $GBENCH_INC_DIR
+
+echo -e "\n** GOOGLE FRAMEWORK INSTALLED **\n"

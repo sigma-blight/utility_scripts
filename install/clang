@@ -1,0 +1,45 @@
+#!/bin/bash
+if [ -z "$1" ]; then
+    echo "Usage: $0 <install_location>"
+    exit -1
+fi
+
+function make_dir()
+{
+    rm -rf "$1"
+    mkdir "$1"
+}
+
+cd $1
+INSTALL_DIR=$PWD
+CPU_CORES="$(grep -c ^processor /proc/cpuinfo)"
+CLANG_TRUNK="http://llvm.org/svn/llvm-project/llvm/trunk"
+LLVM_DIR="$INSTALL_DIR/llvm"
+BUILD_DIR="$INSTALL_DIR/llvm_build"
+
+echo -e "\n** LLVM CLANG INSTALL **\n"
+
+# Check out LLVM
+svn co http://llvm.org/svn/llvm-project/llvm/trunk $LLVM_DIR
+
+# Check out Clang
+cd $LLVM_DIR/tools
+svn co http://llvm.org/svn/llvm-project/cfe/trunk clang
+
+# Check out extra Clang tools
+cd $LLVM_DIR/tools/clang/tools
+svn co http://llvm.org/svn/llvm-project/clang-tools-extra/trunk extra
+
+# Check out Compiler-RT
+cd $LLVM_DIR/projects
+svn co http://llvm.org/svn/llvm-project/compiler-rt/trunk compiler-rt
+
+# Check out libcxx
+cd $LLVM_DIR/projects
+svn co http://llvm.org/svn/llvm-project/libcxx/trunk libcxx
+
+# Build LLVM and Clang
+make_dir $BUILD_DIR
+cd $BUILD_DIR
+cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=Release $LLVM_DIR
+ninja -j $CPU_CORES
