@@ -30,16 +30,16 @@ svn co http://llvm.org/svn/llvm-project/cfe/trunk clang
 cd $LLVM_DIR/tools/clang/tools
 svn co http://llvm.org/svn/llvm-project/clang-tools-extra/trunk extra
 
-# Check out Compiler-RT
-cd $LLVM_DIR/projects
-svn co http://llvm.org/svn/llvm-project/compiler-rt/trunk compiler-rt
+# Check out Compiler-RT (optional)
+#cd $LLVM_DIR/projects
+#svn co http://llvm.org/svn/llvm-project/compiler-rt/trunk compiler-rt
 
-# Check out libcxx
-cd $LLVM_DIR/projects
-svn co http://llvm.org/svn/llvm-project/libcxx/trunk libcxx
+# Check out libcxx (optional)
+#cd $LLVM_DIR/projects
+#svn co http://llvm.org/svn/llvm-project/libcxx/trunk libcxx
 
 # Build LLVM and Clang
 make_dir $BUILD_DIR
 cd $BUILD_DIR
-cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=Release $LLVM_DIR
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Release $LLVM_DIR
 ninja -j $CPU_CORES
