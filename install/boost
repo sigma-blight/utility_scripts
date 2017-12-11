@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 <install_location>"
+    exit -1
+fi
+
+cd $1
+INSTALL_DIR=$(pwd)
+BUILD_DIR="$INSTALL_DIR/boost_build"
+BOOST_VER="1.61.0"
+BOOST_PACKAGE="1_61_0"
+BOOST_FOLDER="boost_$BOOST_PACKAGE"
+BOOST_TAR="$BOOST_FOLDER.tar.bz2"
+BOOST_ONLINE_TAR="https://sourceforge.net/projects/boost/files/boost/$BOOST_VER/$BOOST_TAR"
+BOOST_DIR="$INSTALL_DIR/boost"
+
+echo -e "\n ** BOOST INSTALL **\n"
+
+cd $INSTALL_DIR
+rm -rf $BOOST_TAR
+wget $BOOST_ONLINE_TAR
+
+tar --bzip2 -xf $BOOST_TAR
+cd $BOOST_FOLDER
+./bootstrap.sh --prefix=$BUILD_DIR
+./b2 install
